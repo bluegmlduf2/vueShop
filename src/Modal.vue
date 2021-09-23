@@ -4,7 +4,9 @@
       <img :src="products[clickStat].image" style="width:100%">
       <h4>{{products[clickStat].title}}</h4>
       <p>{{products[clickStat].content}}</p>
-      <p>{{products[clickStat].price}} 만원</p>
+      <input type="text" :value="month" @input="month=$event.target.value"><!--e.target.value //js문법-->
+      <!--<input type="text" v-model.number="month">  두번째 input방법 -->
+      <p>{{month}}개월 선택함 : {{products[clickStat].price * month}} 만원</p>
       <button v-on:click="$emit('closeModal')">닫기</button>
     </div>
   </div>
@@ -13,6 +15,26 @@
 <script>
 export default {
     name:"Modal",
+    data() {
+      return {
+        month:1
+      }
+    },
+    watch:{
+      //month가 변경될때마다 실행
+      month(after,before){
+        //isNaN() 문자열 true , 숫자 false
+        if(isNaN(after)){
+          alert("숫자를 입력해주세요")
+          this.month=1;
+          console.log(this.month)
+        }
+        if (after>12) {
+          this.month=before
+          alert("12개월까지 가능합니다")
+        }
+      },
+    },
     props:{
         products:Array,
         clickStat:Number,
