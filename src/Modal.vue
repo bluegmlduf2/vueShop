@@ -1,14 +1,14 @@
 <template>
   <div class="black-bg" v-if="modalStat">
-    <div class="white-bg">
-      <img :src="products[clickStat].image" style="width:100%">
-      <h4>{{products[clickStat].title}}</h4>
-      <p>{{products[clickStat].content}}</p>
-      <input type="text" :value="month" @input="month=$event.target.value"><!--e.target.value //js문법-->
-      <!--<input type="text" v-model.number="month">  두번째 input방법 -->
-      <p>{{month}}개월 선택함 : {{products[clickStat].price * month}} 만원</p>
-      <button v-on:click="$emit('closeModal')">닫기</button>
-    </div>
+      <div class="white-bg">
+        <img :src="products[clickStat].image" style="width:100%">
+        <h4>{{products[clickStat].title}}</h4>
+        <p>{{products[clickStat].content}}</p>
+        <input type="text" :value="month" @input="month=$event.target.value"><!--e.target.value //js문법-->
+        <!--<input type="text" v-model.number="month">  두번째 input방법 -->
+        <p>{{month}}개월 선택함 : {{products[clickStat].price * month}} 만원</p>
+        <button v-on:click="$emit('closeModal')">닫기</button>
+      </div>
   </div>
 </template>
 
@@ -34,6 +34,12 @@ export default {
           alert("12개월까지 가능합니다")
         }
       },
+    },
+    updated(){
+      if(this.month==2){
+        this.month=1;
+        alert("2개월은 임대하지 않습니다.")
+      }
     },
     props:{
         products:Array,

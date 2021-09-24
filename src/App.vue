@@ -3,10 +3,16 @@
   <div class="menu">
     <a v-for="(elem,idx) in menus" :key="idx" href="">{{elem}}</a>
   </div>
+  <button @click="sortPrice">가격순정렬</button>
+  <button @click="backPrice">되돌리기</button>
   <!-- 디스카운트 -->
-  <Discount/>
+  <transition name="swing">
+    <Discount v-if="discountState" :discountRate="discountRate"/>
+  </transition>
   <!-- 모달 -->
-  <Modal @closeModal="modalStat=false;" :products="products" :clickStat="clickStat" :modalStat="modalStat"/>
+  <div class="start" :class="{end:modalStat}">
+      <Modal @closeModal="modalStat=false;" :products="products" :clickStat="clickStat" :modalStat="modalStat"/>
+  </div>
   <!-- 상품정보 리스트 -->
   <Card @openModal="modalStat=true;clickStat=$event"  :product="products[idx]" v-for="(elem,idx) in products" :key="elem.id" />
 </template>
@@ -25,8 +31,11 @@ export default {
       modalStat:false,
       reportCnt:[0,0,0],
       menus:["Home","Shop","About"],
+      productsOrigin:[...testData],
       products:testData,
-      styleTest:"color:darkslateblue"
+      styleTest:"color:darkslateblue",
+      discountState:true,
+      discountRate:10
     }
   },
   methods: {
@@ -38,7 +47,26 @@ export default {
     },
     closeModal(){
       this.modalStat=false
+    },
+    sortPrice(){
+      this.products.sort((a,b)=>{
+        return a.price-b.price
+      })
+    },
+    backPrice(){
+      this.products=[...this.productsOrigin]
     }
+  },
+  created(){
+    setInterval(() => {
+      this.discountRate-=1
+    }, 1000);
+  },
+  mounted(){
+    // 애로우펑션을 사용하면 this를 사용해서 외부블록의 변수를 가져올수있다.
+    setTimeout(()=>{
+      this.discountState=false;
+    }, 10000);
   },
   components: {
     Discount:Discount,
@@ -71,4 +99,16 @@ body{
 div{
   box-sizing: border-box;/*태두리를 포함한 크기를 지정하게 됨*/
 }
+/* 애니메이션 */
+.start{
+  opacity: 0;
+  transition: all 1s;
+}
+.end{
+  opacity: 1;
+}
+/* 시작~종료 무지성 뷰 애니메이션 */
+.swing-enter-from{opacity: 1;}
+.swing-enter-active{transition: all 1s ease;}/*1초동안 일정한속도로 */
+.swing-enter-to{opacity:0}
 </style>
